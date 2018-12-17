@@ -1,0 +1,731 @@
+* interesting stuff 
+| Shortcut | function                    | 
+|----------+-----------------------------| 
+| M-s h .  | highlight word under cursor | 
+| C-x w .  | same                        | 
+| M-s h u  | unhiglight                  | 
+| M-s .    | search word under cursor    | 
+
+* package manager
+#+BEGIN_SRC emacs-lisp
+    ;; load evil
+    ;; (use-package evil
+    ;;   :ensure t ;; install the evil package if not installed
+    ;;   :init ;; tweak evil's configuration before loading it
+    ;;   ;; (setq evil-search-module 'evil-search)
+    ;;   ;; (setq evil-ex-complete-emacs-commands nil)
+    ;;   ;; (setq evil-vsplit-window-right t)
+    ;;   ;; (setq evil-split-window-below t)
+    ;;   ;; (setq evil-shift-round nil)
+    ;;   ;; (setq evil-want-C-u-scroll t)
+    ;;   :config ;; tweak evil after loading it
+    ;;   (evil-mode))
+    ;; 
+    ;; (use-package evil-escape
+    ;;   :ensure t
+    ;;   :init
+    ;;   (setq-default evil-escape-key-sequence "jk")  ; remap ESC to jk
+    ;;   :config
+    ;;   (evil-escape-mode 1))
+
+
+
+    ;; Helm (disabled since it is similar to ido)
+    ;; enable fuzzy matching
+  ;;   (use-package helm
+  ;;     :ensure t
+  ;;     :init
+  ;;     (setq helm-M-x-fuzzy-match t
+  ;;     helm-mode-fuzzy-match t
+  ;;     helm-buffers-fuzzy-matching t
+  ;;     helm-recentf-fuzzy-match t
+  ;;     helm-locate-fuzzy-match t
+  ;;     helm-semantic-fuzzy-match t
+  ;;     helm-imenu-fuzzy-match t
+  ;;     helm-completion-in-region-fuzzy-match t
+  ;;     helm-candidate-number-list 150
+  ;;     helm-split-window-in-side-p t
+  ;;     helm-move-to-line-cycle-in-source t
+  ;;     helm-echo-input-in-header-line t
+  ;;     helm-autoresize-max-height 0
+  ;;     helm-autoresize-min-height 20)
+  ;;     :config
+  ;;     (helm-mode 1))
+  ;; 
+
+    ;; Custom keybinding
+    ;; prefix is SPC
+  ;;   (use-package general
+  ;;     :ensure t
+  ;;     :config (general-define-key
+  ;;     :states '(normal visual insert emacs)
+  ;;     :prefix "SPC"
+  ;;     :non-normal-prefix "M-SPC"
+  ;;     ;; "/"   '(counsel-rg :which-key "ripgrep") ; You'll need counsel package for this
+  ;;     "TAB" '(switch-to-prev-buffer :which-key "previous buffer")
+  ;;     "SPC" '(helm-M-x :which-key "M-x")
+  ;;     "pf"  '(helm-find-files :which-key "find files")
+  ;;     ;; Buffers
+  ;;     "bb"  '(helm-buffers-list :which-key "buffers list")
+  ;;     ;; Window
+  ;;     "wl"  '(windmove-right :which-key "move right")
+  ;;     "wh"  '(windmove-left :which-key "move left")
+  ;;     "wk"  '(windmove-up :which-key "move up")
+  ;;     "wj"  '(windmove-down :which-key "move bottom")
+  ;;     "w/"  '(split-window-right :which-key "split right")
+  ;;     "w-"  '(split-window-below :which-key "split bottom")
+  ;;     "wx"  '(delete-window :which-key "delete window")
+  ;;     ;; Others
+  ;;     "at"  '(ansi-term :which-key "open terminal")
+  ;;   ))
+  ;; 
+  
+
+#+END_SRC
+* startup
+#+BEGIN_SRC emacs-lisp
+  ;; set default coding system
+  (set-language-environment "UTF-8")
+  ;; no startup msg  
+  (setq inhibit-startup-message t)
+
+  ;; get HOME env var which is ~
+  (getenv "HOME")
+  ;; (setq default-directory "c:\\Users\\Alexa\\")
+  (cd "~/")
+
+  ;; Tell emacs where is your personal elisp lib dir
+  (add-to-list 'load-path "~/.emacs.d/mystuff/")
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+
+  ;; open default org file
+  (find-file "~/dummy.org") 
+  (find-file "C:/org-mode.org") 
+#+END_SRC
+** dashboard
+Startup screen.
+
+This is your new startup screen, together with projectile it works in unison and provides you with a quick look into your latest projects and files. Change the welcome message to whatever string you want and change the numbers to suit your liking, I find 5 to be enough.
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+      (dashboard-setup-startup-hook)
+      (setq dashboard-startup-banner "~/.emacs.d/img/dashLogo.png")
+      (setq dashboard-items '((recents  . 5)
+			      (projects . 5)))
+      (setq dashboard-banner-logo-title "Hello you"))
+#+END_SRC
+
+* minor settings
+** ivy
+Prerequisite for other packages
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :ensure t)
+#+END_SRC
+** electric brackets
+Auto-complete parentheses.
+#+BEGIN_SRC emacs-lisp
+  ;; configure electric pair mode for (), [], {}, "", ''
+  (setq electric-pair-pairs '(
+			      (?\( . ?\))
+			      (?\[ . ?\])
+			      (?\{ . ?\})
+			      (?\" . ?\")
+			      (?\' . ?\')
+			      ))
+  ;; enable electric pair mode
+  (electric-pair-mode t)
+#+END_SRC
+** clock
+If you prefer the 12hr-format, change the variable to nil instead of t.
+#+BEGIN_SRC emacs-lisp
+  ;; time format
+  (setq display-time-24hr-format t)
+  (setq display-time-format "%H:%M - %d %B %Y")
+
+  ;; enable mode globally 
+  (display-time-mode 1)
+#+END_SRC
+* convenient function
+** Visiting configuration
+Quickly edit ~/.emacs.d/config.org by pressing C-c e
+#+BEGIN_SRC emacs-lisp
+  (defun config-visit ()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (global-set-key (kbd "C-c e") 'config-visit)
+#+END_SRC
+
+** Reloading configuration
+Simply pressing Control-c r will reload this file, very handy. You can also manually invoke config-reload.
+#+BEGIN_SRC emacs-lisp
+  (defun config-reload ()
+    "Reloads ~/.emacs.d/config.org at runtime"
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c r") 'config-reload)
+#+END_SRC
+
+** smex
+smex shows recently used command on M-x
+#+BEGIN_SRC emacs-lisp
+  (use-package smex
+    :ensure t
+    :init (smex-initialize)
+    :bind
+    ("M-x" . smex))
+#+END_SRC
+* moving around
+** subword
+go back and forth in subword (camelCase) instead of the whole word when pressin M-f or M-b
+Disabled. when enabled kill-inner-word does not work unfortunately and only deletes like half the word till it reaches the first Capital letter. Dang.
+
+#+BEGIN_SRC emacs-lisp
+  (global-subword-mode 1)
+#+END_SRC
+** scrolling
+#+BEGIN_SRC emacs-lisp
+    ;; scroll line by line when reaching bottom/top of screen
+    (setq scroll-conservatively 100)
+#+END_SRC
+** buffer window navigation
+#+begin_SRC emacs-lisp
+    ;; switch buffers (all active onces..also the stupid system / help buffers
+    (global-set-key [f9] 'toggle-frame-fullscreen) ; was f11
+    (global-set-key [f11] 'previous-buffer)
+    (global-set-key [f12] 'next-buffer)
+
+    ;; switch to previous buffer
+    (global-set-key (kbd "M-o")  'mode-line-other-buffer)
+    (global-set-key (kbd "M-p")  'other-window)
+    ;; switch buffers, excluding system buffers (additional package necessary)
+    ;; SOURCE
+    ;; (autoload 'cycle-buffer "cycle-buffer" "Cycle forward." t)
+    ;; (autoload 'cycle-buffer-backward "cycle-buffer" "Cycle backward." t)
+    ;; (autoload 'cycle-buffer-permissive "cycle-buffer" "Cycle forward allowing *buffers*." t)
+    ;; (autoload 'cycle-buffer-backward-permissive "cycle-buffer" "Cycle backward allowing *buffers*." t)
+    ;; (autoload 'cycle-buffer-toggle-interesting "cycle-buffer" "Toggle if this buffer will be considered." t)
+    ;; (global-set-key [(f9)]        'cycle-buffer-backward)
+    ;; (global-set-key [(f10)]       'cycle-buffer)
+    ;; (global-set-key [(shift f9)]  'cycle-buffer-backward-permissive)
+    ;; (global-set-key [(shift f10)] 'cycle-buffer-permissive)
+
+    ;; source: https://www.emacswiki.org/emacs/CycleBuffer
+    ;; (global-set-key [f11] 'cycle-buffer-backward)
+    ;; (global-set-key [f12] 'cycle-buffer)
+    ;; (global-set-key [S-f11] (lambda () (interactive) (kill-buffer nil)))
+    ;; (global-set-key [S-f12] 'bury-buffer)
+#+END_SRC
+** which key
+Shows documentation and gives suggestion when typing key.
+#+BEGIN_SRC emacs-lisp
+  ;; Which Key
+  ;; shows options when pressing SPACE
+  (use-package which-key
+    :ensure t
+    :init
+    (setq which-key-separator " ")      ; SPACE
+    (setq which-key-prefix-prefix "+")
+    :config
+    (which-key-mode 1))
+
+#+END_SRC
+* look
+** theme
+load theme
+#+BEGIN_SRC emacs-lisp
+  ;; Theme
+  ;; (use-package doom-themes
+  ;;   :ensure t
+  ;;   :config
+  ;;   (load-theme 'doom-one t))  ; select doom-one theme
+  ;; (use-package zerodark-theme
+  ;;   :ensure t
+  ;;   :init
+  ;;   (load-theme 'zerodark t))
+
+  (use-package dracula-theme
+    :ensure t
+    :init
+    (load-theme 'dracula t))
+#+END_SRC
+** beacon
+#+BEGIN_SRC emacs-lisp
+      ; show little flash where the cursor is when changing buffers
+      (use-package beacon
+	:ensure t
+	:init
+	(beacon-mode)1)
+#+END_SRC
+** bar
+#+begin_src emacs-lisp
+  ;; source https://huytd.github.io/emacs-from-scratch.html
+  ;; Minimal UI
+  (scroll-bar-mode -1)
+  (tool-bar-mode   -1)
+  (tooltip-mode    -1)
+  (menu-bar-mode   t)
+
+  ;; no sound
+  (setq ring-bell-function 'ignore)
+  ;; highlight current line
+  (when window-system (global-hl-line-mode t))
+  ;; use prettier symbols e.g. lambda on windows
+  (when window-system (global-prettify-symbols-mode t))
+
+  ;; Show matching parentheses
+  (setq show-paren-delay 0)
+  (show-paren-mode 1)
+  ; default font
+  (add-to-list 'default-frame-alist '(font . "Consolas-12"))
+  ; default height and width on startup
+  (add-to-list 'default-frame-alist '(height . 24))
+  (add-to-list 'default-frame-alist '(width . 80))
+  ;(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+  ;; use y n instead of typing y or no
+  (defalias 'yes-or-no-p 'y-or-n-p)
+
+
+
+
+
+  ;; (custom-set-variables
+  ;;  ;; custom-set-variables was added by Custom.
+  ;;  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;;  ;; Your init file should contain only one such instance.
+  ;;  ;; If there is more than one, they won't work right.
+  ;;  '(global-linum-mode t)
+  ;;  '(org-agenda-files (quote ("c:/0-AN/00-code/dummy.org")))
+  ;;  '(org-startup-truncated t)
+  ;;  '(package-selected-packages (quote (projectile helm ##)))
+  ;;  '(show-paren-mode t))
+  ;; (custom-set-faces
+  ;;  ;; custom-set-faces was added by Custom.
+  ;;  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;;  ;; Your init file should contain only one such instance.
+  ;;  ;; If there is more than one, they won't work right.
+  ;;  )
+
+
+#+END_SRC
+
+** rainbow hex
+When hex number is typed, show color.
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-mode
+    :ensure t
+    :init (rainbow-mode 1))
+#+END_SRC
+** rainbow brackets
+Add color coded brackets to most programming modes.
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :init
+    (progn
+      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
+#+END_SRC
+
+* ORG
+** org-bullet
+Disabled. Slows emacs down on Windows.
+;; #+BEGIN_SRC emacs-lisp
+;;   (use-package org-bullets
+;;     :ensure t
+;;     :config
+;;     (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
+;; #+END_SRC
+** line break
+line break mode
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook '(lambda () (visual-line-mode 1))) 
+#+END_SRC
+
+** timestamps
+#+BEGIN_SRC emacs-lisp
+  ;; add timestamp when switching to DONE 
+  ;; source: https://orgmode.org/manual/Closing-items.html 
+  (setq org-log-done 'time) 
+  ;; add closing note and time stamp 
+  ;; (setq org-log-done 'note)
+#+END_SRC
+To add timestamps everytime a TODO item is cycled put the following in your .org file.
+To prompt message input when cycling put @ after it:
+  CANCELLED(c@) 
+To log state changes (when entered/left) add ! after it
+  NOTHING(b!) 
+E.g.
+;#+SEQ_TODO: TODO(t) WAITING(w) | CANCELLED(c@) DONE(d!) 
+** emacs-lisp-template
+Hitting tab after an < el in an org-mode file will create a template for elisp insertion.
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-structure-template-alist
+		 '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+#+END_SRC
+* helm
+** ido
+ido management works, might be faster than helm. not sure yet.
+*** enable ido mode
+ - ido allows to easier buffer file navigation
+;; #+BEGIN_SRC emacs-lisp
+;;   (setq ido-enable-flex-matching nil)
+;;   ;; create new buffer if file does not exist
+;;   (setq ido-create-new-buffer 'always)
+;;   ;; use ido everywhere
+;;   (setq ido-everywhere t)
+;;   (ido-mode 1)
+;; #+END_SRC
+;; *** use vertical layout instead of horizontal
+;; #+BEGIN_SRC emacs-lisp
+;;   (use-package ido-vertical-mode
+;;     :ensure t
+;;     :init
+;;     (ido-vertical-mode 1))
+;;   ;; use C-n and C-p to move between elements in ido
+;;   (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+;; #+END_SRC
+;; *** switch buffer
+;; Show 'small' buffer, navigate with C-n, C-p
+;; #+BEGIN_SRC emacs-lisp
+;;   (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
+;; #+END_SRC
+** helm
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t
+    :bind
+    ("C-x C-f" . 'helm-find-files)
+    ("C-x C-b" . 'helm-buffers-list)
+    ("M-x" . 'helm-M-x)
+    :config
+    (defun daedreth/helm-hide-minibuffer ()
+      (when (with-helm-buffer helm-echo-input-in-header-line)
+	(let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+	  (overlay-put ov 'window (selected-window))
+	  (overlay-put ov 'face
+		       (let ((bg-color (face-background 'default nil)))
+			 `(:background ,bg-color :foreground ,bg-color)))
+	  (setq-local cursor-type nil))))
+    (add-hook 'helm-minibuffer-set-up-hook 'daedreth/helm-hide-minibuffer)
+    (setq helm-autoresize-max-height 0
+	  helm-autoresize-min-height 40
+	  helm-M-x-fuzzy-match t
+	  helm-buffers-fuzzy-matching t
+	  helm-recentf-fuzzy-match t
+	  helm-semantic-fuzzy-match t
+	  helm-imenu-fuzzy-match t
+	  helm-split-window-in-side-p nil
+	  helm-move-to-line-cycle-in-source nil
+	  helm-ff-search-library-in-sexp t
+	  helm-scroll-amount 8 
+	  helm-echo-input-in-header-line t)
+    :init
+    (helm-mode 1))
+
+  (require 'helm-config)    
+  (helm-autoresize-mode 1)
+  (define-key helm-find-files-map (kbd "C-b") 'helm-find-files-up-one-level)
+  (define-key helm-find-files-map (kbd "C-f") 'helm-execute-persistent-action)
+#+END_SRC
+* buffers
+** always kill current buffer
+#+BEGIN_SRC emacs-lisp
+  (defun kill-current-buffer ()
+    (interactive)
+    (kill-buffer (current-buffer))) ; kill current buffer
+  ;; map function to key
+  (global-set-key (kbd "C-x k") 'kill-current-buffer)
+#+END_SRC
+** enable ibuffer
+better than default buffer managements. 
+ - switches the current window to buffer window
+ - navigate with n and p
+ - mark buffer for deletion with d
+ - execute deletion with x
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x b") 'ibuffer)
+
+  ;; do not confirm deletes
+  (setq ibuffer-expert t)
+#+END_SRC
+* avy
+Character search visualized. 
+ - type M-s and type a character
+ - type resulting chars to go to location
+#+BEGIN_SRC emacs-lisp 
+  (use-package avy 
+    :ensure t 
+    :bind ("<f8>" . avy-goto-char)) 
+#+END_SRC
+* window-splitting
+Split window and jump to new pane
+#+BEGIN_SRC emacs-lisp
+  ; function that does the following
+  (defun split-and-follow-horizontally ()
+    (interactive)
+    (split-window-below) ; call split-window
+    (balance-windows)    ; split windows evenly
+    (other-window 1))    ; focus on next window
+
+  ;; remap existing split shortcut to new function
+  (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+
+  ;; function that does the following
+  (defun split-and-follow-vertically ()
+    (interactive)
+    (split-window-right) ; call split-window to the right
+    (balance-windows)    ; split windows evenly
+    (other-window 1))    ; focus on next window
+
+  ;; remap existing split shortcut to new function
+  (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+#+END_SRC
+* kill ring
+** Maximum number of entries
+Default is 60. Now 100
+#+BEGIN_SRC emacs-lisp
+  (setq kill-ring-max 100)
+#+END_SRC
+** popup kill ring
+With a simple M-y you can now browse your kill-ring like browsing autocompletion items. C-n and C-p totally work for this.
+#+BEGIN_SRC emacs-lisp
+  (use-package popup-kill-ring
+    :ensure t
+    :bind ("M-y" . popup-kill-ring))
+#+END_SRC
+* Modeline
+The modeline is the heart of emacs, it offers information at all times, it’s persistent and verbose enough to gain a full understanding of modes and states you are in.
+
+Due to the fact that we attempt to use emacs as a desktop environment replacement, and external bar showing the time, the battery percentage and more system info would be great to have. I have however abandoned polybar in favor of a heavily modified modeline, this offers me more space on the screen and better integration.
+
+One modeline-related setting that is missing and is instead placed at the bottom is diminish.
+** Spaceline as Modeline
+I may not use spacemacs, since I do not like evil-mode and find spacemacs incredibly bloated and slow, however it would be stupid not to acknowledge the best parts about it, the theme and their modified powerline setup.
+
+This enables spaceline, it looks better and works very well with my theme of choice.
+#+BEGIN_SRC emacs-lisp
+    (use-package spaceline
+      :ensure t
+      :config
+      (require 'spaceline-config)
+       ;; (setq spaceline-buffer-encoding-abbrev-p nil)
+       ;; (setq spaceline-line-column-p nil)
+      ;; (setq spaceline-line-p nil)
+	(setq powerline-default-separator (quote arrow))
+	(spaceline-spacemacs-theme)
+	(spaceline-toggle-line-column-on))
+#+END_SRC
+** No separator! in Modeline
+#+BEGIN_SRC emacs-lisp
+  (setq powerline-default-separator nil)
+#+END_SRC
+** show lines and columns in Modeline
+In lower bar column and lines are shown.
+#+BEGIN_SRC emacs-lisp
+  (setq line-number-mode t)
+  (setq column-number-mode t)
+#+END_SRC
+* Search
+#+BEGIN_SRC emacs-lisp
+ (use-package swiper
+   :ensure t
+   :bind ("C-s" . 'swiper))
+#+END_SRC
+* Text manipulation
+** mark multiple
+This extension allows you to quickly mark the next occurence of a region and edit them all at once.
+#+BEGIN_SRC emacs-lisp
+  (use-package mark-multiple
+    :ensure t
+    :bind ("C-c q" . 'mark-next-like-this))
+#+END_SRC
+** kill whole word
+"Kills the entire word your cursor is in. Equivalent to 'diw' in vim.
+#+BEGIN_SRC emacs-lisp
+  (defun m-kill-inner-word ()
+    (interactive)
+    (forward-char 1)
+    (global-subword-mode -1)  ; disable camelCase backward
+    (backward-word)           ; go back whole word
+    (kill-word 1)             ; kill word from start to end
+    (global-subword-mode 1))  ; enable camelCase back/forward
+  ;; remap key to kill inner word
+  (global-set-key (kbd "C-c w k") 'm-kill-inner-word)
+#+END_SRC
+** kill whole line
+Delete whole line.
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c l k") 'kill-whole-line)
+#+END_SRC
+** copy whole word
+Copy inner word.
+#+BEGIN_SRC emacs-lisp
+  (defun m-copy-whole-word ()
+    (interactive)
+    (save-excursion
+      (forward-char 1)
+      (global-subword-mode 1)  ; disable camelCase back/forward    
+      (backward-word)          ; go back whole word
+      (kill-word 1)            ; kill word to get it into kill bufer
+      (global-subword-mode 1)  ; enable camelCase back/forward
+      (yank)))                 ; yank word back
+  (global-set-key (kbd "C-c w c") 'm-copy-whole-word)
+#+END_SRC
+** copy whole line
+Like in vim yy.
+#+BEGIN_SRC emacs-lisp
+  (defun m-copy-whole-line ()
+    "Copies line without \n and without regard for cursor position."
+    (interactive)
+    (save-excursion        ; save cursor location
+      (kill-new            ; kill between..
+       (buffer-substring
+	(point-at-bol)     ; beginning of line
+	(point-at-eol))))) ; end of line
+  (global-set-key (kbd "C-c l c") 'm-copy-whole-line)
+#+END_SRC
+
+** hungry deletion
+Delete large number of whitespace up to next non-whitespace char.
+#+BEGIN_SRC emacs-lisp
+  (use-package hungry-delete
+    :ensure t
+    :config
+      (global-hungry-delete-mode))
+#+END_SRC
+** zap up to char
+#+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "M-z") 'zap-up-to-char)
+#+END_SRC
+** expand region
+A pretty simple package, takes your cursor and semantically expands the region, so words, sentences, maybe the contents of some parentheses, it’s awesome, try it out.
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :ensure t
+    :bind ("C-q" . er/expand-region))
+#+END_SRC
+* projects and folder
+** projectile
+Project management
+#+BEGIN_SRC emacs-lisp
+  ;; enable projectile globally
+  (use-package projectile
+    :ensure t
+    :init
+    (setq projectile-require-project-root nil)
+    :config
+    (projectile-mode 1))
+
+  (global-set-key (kbd "<f5>") 'projectile-compile-project)
+#+END_SRC
+** neo tree
+#+BEGIN_SRC emacs-lisp
+      ;; All The Icons 
+      ;; for Neo tree
+      (use-package all-the-icons :ensure t)
+
+      ;; NeoTree
+      ;; folder tree
+      (use-package neotree
+	:ensure t
+	:bind (("<f7>" . neotree-toggle))
+	:init
+	(setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
+
+#+END_SRC
+* File manager
+[[https://www.emacswiki.org/emacs/Sunrise_Commander][Link to emacs wiki for sunrise commander]].
+#+BEGIN_SRC emacs-lisp
+;; repo http://joseito.republika.pl/sunrise-commander/ is down
+
+;;  (use-package sunrise-commander
+;;    :ensure t
+;;    :init
+;;      (use-package sunrise-x-buttons :ensure t)
+;;      (use-package sunrise-x-modeline :ensure t)
+;;      (setq sr-cursor-follows-mouse nil)
+;;      (define-key sr-mode-map [mouse-1] nil)
+;;      (define-key sr-mode-map [mouse-movement] nil)
+;;    :bind ("s-t" . sunrise))
+#+END_SRC
+* auto completion
+** company
+I set the delay for company mode to kick in to half a second, I also make sure that it starts doing its magic after typing in only 2 characters.
+I prefer C-n and C-p to move around the items, so I remap those accordingly.
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :config
+    (setq company-idle-delay 0)              ; no delay for auto complete
+    (setq company-minimum-prefix-length 3)   ; auto complete after 3 char
+    (add-hook 'after-init-hook 'global-company-mode))            ; enable globally
+
+  (with-eval-after-load 'company
+    ;(define-key company-active-map (kbd "M-n") nil)   ; disable M-n/p to move around
+    ;(define-key company-active-map (kbd "M-p") nil)
+    (define-key company-active-map (kbd "C-n") #'company-select-next)    ; move to next itme
+    (define-key company-active-map (kbd "C-p") #'company-select-previous) ; move to previous item
+    (define-key company-active-map (kbd "SPC") #'company-abort))
+#+END_SRC
+
+** company-irony
+[[https://github.com/Sarcasm/irony-mode][Irony]] prerequesite (see also wind)
+ - Clang must be installed ([[http://releases.llvm.org/download.html][link]]).
+ - CMake >= 2.8.3
+Installing auto complete can be a little complicated. Here are some help links
+ - [[https://www.youtube.com/watch?v=XeWZfruRu6k][Uncle Daves Video - Emacs Tutorial 19 - Completion - Company for C/C++]]
+ - [[https://legends2k.github.io/note/install-irony-win32/][Emacs C++ auto-complete setup on Windows]]
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'company            ;; check whether company is loaded
+    (add-hook 'c++-mode-hook 'company-mode)
+    (add-hook 'c-mode-hook 'company-mode))
+
+  ;; completes c headers
+  (use-package company-c-headers
+    :ensure t)
+
+  ;; Completion backend for irony-mode
+  (use-package company-irony
+    :ensure t
+    :config
+    (setq company-backends '((company-c-headers
+			      company-dabbrev-code
+			      company-irony))))
+
+  ;; A C/C++ minor mode powered by libclang
+  ;; requires, CMake >= 2.8.3, ibclang
+  (use-package irony
+    :ensure t
+    :config
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)) ;; setup clang in background
+
+  ;; activate company mode in c files
+#+END_SRC
+
+* Programming
+** yasnippet
+enable snippet, not sure how it work atm
+#+BEGIN_SRC emacs-lisp
+    (use-package yasnippet
+      :ensure t
+      :config
+	(use-package yasnippet-snippets
+	  :ensure t)
+	(yas-reload-all))
+
+  ;;    (add-hook 'prog-mode-hook #'yas-minor-mode) ; for programming only 
+  ;;    (yas-global-mode 1)) ; always enabled
+
+  (add-hook 'c++-mode-hook 'yas-minor-mode)
+  (add-hook 'c-mode-hook 'yas-minor-mode)
+#+END_SRC
+** flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t)
+#+END_SRC
