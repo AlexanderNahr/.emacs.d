@@ -1,87 +1,11 @@
 * interesting stuff 
-| Shortcut | function                    | 
-|----------+-----------------------------| 
-| M-s h .  | highlight word under cursor | 
-| C-x w .  | same                        | 
-| M-s h u  | unhiglight                  | 
-| M-s .    | search word under cursor    | 
+| Shortcut | function                    |
+|----------+-----------------------------|
+| M-s h .  | highlight word under cursor |
+| C-x w .  | same                        |
+| M-s h u  | unhiglight                  |
+| M-s .    | search word under cursor    |
 
-* package manager
-#+BEGIN_SRC emacs-lisp
-    ;; load evil
-    ;; (use-package evil
-    ;;   :ensure t ;; install the evil package if not installed
-    ;;   :init ;; tweak evil's configuration before loading it
-    ;;   ;; (setq evil-search-module 'evil-search)
-    ;;   ;; (setq evil-ex-complete-emacs-commands nil)
-    ;;   ;; (setq evil-vsplit-window-right t)
-    ;;   ;; (setq evil-split-window-below t)
-    ;;   ;; (setq evil-shift-round nil)
-    ;;   ;; (setq evil-want-C-u-scroll t)
-    ;;   :config ;; tweak evil after loading it
-    ;;   (evil-mode))
-    ;; 
-    ;; (use-package evil-escape
-    ;;   :ensure t
-    ;;   :init
-    ;;   (setq-default evil-escape-key-sequence "jk")  ; remap ESC to jk
-    ;;   :config
-    ;;   (evil-escape-mode 1))
-
-
-
-    ;; Helm (disabled since it is similar to ido)
-    ;; enable fuzzy matching
-  ;;   (use-package helm
-  ;;     :ensure t
-  ;;     :init
-  ;;     (setq helm-M-x-fuzzy-match t
-  ;;     helm-mode-fuzzy-match t
-  ;;     helm-buffers-fuzzy-matching t
-  ;;     helm-recentf-fuzzy-match t
-  ;;     helm-locate-fuzzy-match t
-  ;;     helm-semantic-fuzzy-match t
-  ;;     helm-imenu-fuzzy-match t
-  ;;     helm-completion-in-region-fuzzy-match t
-  ;;     helm-candidate-number-list 150
-  ;;     helm-split-window-in-side-p t
-  ;;     helm-move-to-line-cycle-in-source t
-  ;;     helm-echo-input-in-header-line t
-  ;;     helm-autoresize-max-height 0
-  ;;     helm-autoresize-min-height 20)
-  ;;     :config
-  ;;     (helm-mode 1))
-  ;; 
-
-    ;; Custom keybinding
-    ;; prefix is SPC
-  ;;   (use-package general
-  ;;     :ensure t
-  ;;     :config (general-define-key
-  ;;     :states '(normal visual insert emacs)
-  ;;     :prefix "SPC"
-  ;;     :non-normal-prefix "M-SPC"
-  ;;     ;; "/"   '(counsel-rg :which-key "ripgrep") ; You'll need counsel package for this
-  ;;     "TAB" '(switch-to-prev-buffer :which-key "previous buffer")
-  ;;     "SPC" '(helm-M-x :which-key "M-x")
-  ;;     "pf"  '(helm-find-files :which-key "find files")
-  ;;     ;; Buffers
-  ;;     "bb"  '(helm-buffers-list :which-key "buffers list")
-  ;;     ;; Window
-  ;;     "wl"  '(windmove-right :which-key "move right")
-  ;;     "wh"  '(windmove-left :which-key "move left")
-  ;;     "wk"  '(windmove-up :which-key "move up")
-  ;;     "wj"  '(windmove-down :which-key "move bottom")
-  ;;     "w/"  '(split-window-right :which-key "split right")
-  ;;     "w-"  '(split-window-below :which-key "split bottom")
-  ;;     "wx"  '(delete-window :which-key "delete window")
-  ;;     ;; Others
-  ;;     "at"  '(ansi-term :which-key "open terminal")
-  ;;   ))
-  ;; 
-  
-
-#+END_SRC
 * startup
 #+BEGIN_SRC emacs-lisp
   ;; set default coding system
@@ -99,8 +23,7 @@
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 
   ;; open default org file
-  (find-file "~/dummy.org") 
-  (find-file "C:/org-mode.org") 
+  (find-file "C:/0-AN/org-mode.org") 
 #+END_SRC
 ** dashboard
 Startup screen.
@@ -116,7 +39,6 @@ This is your new startup screen, together with projectile it works in unison and
 			      (projects . 5)))
       (setq dashboard-banner-logo-title "Hello you"))
 #+END_SRC
-
 * minor settings
 ** ivy
 Prerequisite for other packages
@@ -147,6 +69,12 @@ If you prefer the 12hr-format, change the variable to nil instead of t.
 
   ;; enable mode globally 
   (display-time-mode 1)
+#+END_SRC
+** auto revert
+[[https://www.emacswiki.org/emacs/AutoRevertMode][Source AutoRevert.]] [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Autorevert.html][Correponding Emacs Documentation]]
+#+BEGIN_SRC emacs-lisp
+  ;; Automatically reload files was modified by external program
+  (global-auto-revert-mode 1)
 #+END_SRC
 * convenient function
 ** Visiting configuration
@@ -187,36 +115,29 @@ Disabled. when enabled kill-inner-word does not work unfortunately and only dele
 #+END_SRC
 ** scrolling
 #+BEGIN_SRC emacs-lisp
-    ;; scroll line by line when reaching bottom/top of screen
-    (setq scroll-conservatively 100)
+  ;; scroll line by line when reaching bottom/top of screen
+  (setq scroll-conservatively 100)
+
+  ;; scroll half pages like in VIM
+  ;; load view libraries
+  (autoload 'View-scroll-half-page-forward "view")
+  (autoload 'View-scroll-half-page-backward "view")
+  ;; remap keybindings
+  (global-set-key (kbd "C-v") 'View-scroll-half-page-forward)
+  (global-set-key (kbd "M-v") 'View-scroll-half-page-backward)
 #+END_SRC
 ** buffer window navigation
 #+begin_SRC emacs-lisp
-    ;; switch buffers (all active onces..also the stupid system / help buffers
-    (global-set-key [f9] 'toggle-frame-fullscreen) ; was f11
-    (global-set-key [f11] 'previous-buffer)
-    (global-set-key [f12] 'next-buffer)
+  ;; switch buffers (all active onces..also the stupid system / help buffers
+  (global-set-key [f9] 'toggle-frame-fullscreen) ; was f11
+  (global-set-key [f11] 'previous-buffer)
+  (global-set-key [f12] 'next-buffer)
 
-    ;; switch to previous buffer
-    (global-set-key (kbd "M-o")  'mode-line-other-buffer)
-    (global-set-key (kbd "M-p")  'other-window)
-    ;; switch buffers, excluding system buffers (additional package necessary)
-    ;; SOURCE
-    ;; (autoload 'cycle-buffer "cycle-buffer" "Cycle forward." t)
-    ;; (autoload 'cycle-buffer-backward "cycle-buffer" "Cycle backward." t)
-    ;; (autoload 'cycle-buffer-permissive "cycle-buffer" "Cycle forward allowing *buffers*." t)
-    ;; (autoload 'cycle-buffer-backward-permissive "cycle-buffer" "Cycle backward allowing *buffers*." t)
-    ;; (autoload 'cycle-buffer-toggle-interesting "cycle-buffer" "Toggle if this buffer will be considered." t)
-    ;; (global-set-key [(f9)]        'cycle-buffer-backward)
-    ;; (global-set-key [(f10)]       'cycle-buffer)
-    ;; (global-set-key [(shift f9)]  'cycle-buffer-backward-permissive)
-    ;; (global-set-key [(shift f10)] 'cycle-buffer-permissive)
-
-    ;; source: https://www.emacswiki.org/emacs/CycleBuffer
-    ;; (global-set-key [f11] 'cycle-buffer-backward)
-    ;; (global-set-key [f12] 'cycle-buffer)
-    ;; (global-set-key [S-f11] (lambda () (interactive) (kill-buffer nil)))
-    ;; (global-set-key [S-f12] 'bury-buffer)
+  ;; switch to previous buffer
+  (global-set-key (kbd "M-o")  'mode-line-other-buffer)
+  (global-set-key (kbd "M-p")  'other-window)
+  ;; use Shift-Left, S-Left, S-Right,.. to move through windows
+  (windmove-default-keybindings)
 #+END_SRC
 ** which key
 Shows documentation and gives suggestion when typing key.
@@ -232,6 +153,12 @@ Shows documentation and gives suggestion when typing key.
     (which-key-mode 1))
 
 #+END_SRC
+** imenu
+Jump to points of interest e.g. function definitions. Select from a number of available definitions.
+M-i was bound to M-x tab-to-tab-stop.
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-i") 'imenu)
+#+END_SRC
 * look
 ** theme
 load theme
@@ -246,10 +173,10 @@ load theme
   ;;   :init
   ;;   (load-theme 'zerodark t))
 
-  (use-package dracula-theme
-    :ensure t
-    :init
-    (load-theme 'dracula t))
+  ;; (use-package dracula-theme
+  ;;   :ensure t
+  ;;   :init
+  ;;   (load-theme 'dracula t))
 #+END_SRC
 ** beacon
 #+BEGIN_SRC emacs-lisp
@@ -328,8 +255,22 @@ Add color coded brackets to most programming modes.
     (progn
       (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
 #+END_SRC
+* ORG 
+** agenda 
+set org agenda file 
+#+BEGIN_SRC emacs-lisp 
+  ;; load org (this will ensure org-dir can be set)
+  (require 'org)
+  (setq org-agenda-files (list "c:/0-AN/org-mode.org"))
 
-* ORG
+  (define-key global-map "\C-ca" 'org-agenda)  ; use c-c a to open org agenda menu 
+#+END_SRC 
+** capture
+#+BEGIN_SRC emacs-lisp
+  (setq org-directory "C:/0-AN")		; set org dir, default ~/org
+  (setq org-default-notes-file (concat org-directory "/capture.org"))
+  (define-key global-map "\C-cc" 'org-capture) ; use c-c c to open new capture note
+#+END_SRC
 ** org-bullet
 Disabled. Slows emacs down on Windows.
 ;; #+BEGIN_SRC emacs-lisp
@@ -530,9 +471,12 @@ In lower bar column and lines are shown.
 #+END_SRC
 * Search
 #+BEGIN_SRC emacs-lisp
- (use-package swiper
-   :ensure t
-   :bind ("C-s" . 'swiper))
+  (use-package swiper 
+    :ensure t
+    :bind ("C-s" . 'swiper))
+
+  ;; rebind isearch forward 
+  (global-set-key (kbd "C-S-s") 'isearch-forward)
 #+END_SRC
 * Text manipulation
 ** mark multiple
@@ -607,6 +551,34 @@ A pretty simple package, takes your cursor and semantically expands the region, 
     :ensure t
     :bind ("C-q" . er/expand-region))
 #+END_SRC
+** copy path name 
+Copies current file path to clipboard. [[https://emacsredux.com/blog/2013/03/27/copy-filename-to-the-clipboard/][Source.]] 
+#+BEGIN_SRC emacs-lisp
+  (defun m-copy-file-path-to-clipboard () 
+    "Copy the current buffer file name to the clipboard." 
+    (interactive) 
+    (let ((filename (if (equal major-mode 'dired-mode) 
+			default-directory 
+		      (buffer-file-name)))) 
+      (when filename 
+	(kill-new filename) 
+	(message "Copied buffer file name '%s' to the clipboard." filename)))) 
+
+  ;; assign key board shortcut 
+  (global-set-key (kbd "C-c f p") 'm-copy-file-path-to-clipboard) 
+#+END_SRC
+
+** move up
+#+BEGIN_SRC emacs-lisp
+  ;; (global-set-key (kbd "<M-up>") 'move-text-up)
+  ;; (global-set-key (kbd "<M-down>") 'move-text-down)
+  ;; (global-set-key (kbd "M-<up>") (lambda () (interactive) (move-line -1)))
+#+END_SRC
+* key-chordkey cho
+#+BEGIN_SRC emacs-lisp
+    (use-package key-chord
+      :ensure t)
+#+END_SRC
 * projects and folder
 ** projectile
 Project management
@@ -671,6 +643,35 @@ I prefer C-n and C-p to move around the items, so I remap those accordingly.
     (define-key company-active-map (kbd "SPC") #'company-abort))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+  ;; (eval-after-load 'company
+  ;;   '(add-to-list 'company-backends 'company-irony))
+
+  ;; (defun my-c-common-setup ()    ;; function called by c-mode-common-hook
+  ;;   (irony-mode 1)
+  ;;   (company-mode))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; replace the `completion-at-point' and `complete-symbol' bindings in
+  ;; irony-mode's buffers by irony-mode's function
+  ;; (defun my-irony-mode-hook ()
+    ;; (define-key irony-mode-map [remap completion-at-point]
+      ;; 'irony-completion-at-point-async)
+    ;; (define-key irony-mode-map [remap complete-symbol]
+      ;; 'irony-completion-at-point-async))
+
+  ;; (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  ;; (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (when (boundp 'w32-pipe-read-delay)
+    (setq w32-pipe-read-delay 0))
+  ;; Set the buffer size to 64K on Windows (from the original 4K)
+  (when (boundp 'w32-pipe-buffer-size)
+    (setq irony-server-w32-pipe-buffer-size (* 64 1024)))
+#+END_SRC
 ** company-irony
 [[https://github.com/Sarcasm/irony-mode][Irony]] prerequesite (see also wind)
  - Clang must be installed ([[http://releases.llvm.org/download.html][link]]).
@@ -697,12 +698,12 @@ Installing auto complete can be a little complicated. Here are some help links
 
   ;; A C/C++ minor mode powered by libclang
   ;; requires, CMake >= 2.8.3, ibclang
-  (use-package irony
-    :ensure t
-    :config
-    (add-hook 'c++-mode-hook 'irony-mode)
-    (add-hook 'c-mode-hook 'irony-mode)
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)) ;; setup clang in background
+  ;; (use-package irony
+  ;;   :ensure t
+  ;;   :config
+  ;;   (add-hook 'c++-mode-hook 'irony-mode)
+  ;;   (add-hook 'c-mode-hook 'irony-mode)
+  ;;   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)) ;; setup clang in background
 
   ;; activate company mode in c files
 #+END_SRC
@@ -727,5 +728,33 @@ enable snippet, not sure how it work atm
 ** flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
+    :ensure t)
+#+END_SRC
+
+** test
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map [?\s-g] 'goto-line)
+#+END_SRC
+
+* Undo tree
+Usage: 
+| C-x u       | show undo tree         |
+| C-n, C-p    | navigate tree          |
+| left, rigth | at root, switch branch |
+#+BEGIN_SRC emacs-lisp
+   (use-package undo-tree
+     :ensure t
+     :init (global-undo-tree-mode))
+#+END_SRC
+* grep / find
+On windows requires GNUWin32 for [[http://gnuwin32.sourceforge.net/packages/grep.htm][grep]] and [[http://gnuwin32.sourceforge.net/packages/findutils.htm][find]] tools to be installed. See also cygwin or GNU coreutils.
+#+BEGIN_SRC emacs-lisp
+  (when (or (eq system-type 'windows-nt) (eq system-type 'msdos))
+    (setq find-program "C:\\\"Program Files\"\\Git\\usr\\bin\\find.exe"
+	  grep-program "C:\\\"Program Files (x86)\"\\GnuWin32\\bin\\grep.exe"))
+#+END_SRC
+* pdf-tools
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
     :ensure t)
 #+END_SRC
