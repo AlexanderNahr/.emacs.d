@@ -37,7 +37,6 @@
  '(custom-safe-themes
    (quote
     ("aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "b54826e5d9978d59f9e0a169bbd4739dd927eead3ef65f56786621b53c031a7c" "d2e9c7e31e574bf38f4b0fb927aaff20c1e5f92f72001102758005e53d77b8c9" "fe666e5ac37c2dfcf80074e88b9252c71a22b6f5d2f566df9a7aa4f9bea55ef8" default)))
- '(org-agenda-files (quote ("c:/0-AN/capture.org" "c:/0-AN/org-mode.org")))
  '(package-selected-packages
    (quote
     (pdf-tools undo-tree key-chord company-irony company-c-headers helm popup-kill-ring mark-multiple hungry-delete expand-region swiper dracula-theme zerodark-theme spaceline company avy smex ido-vertical-mode org-bullets beacon evil-escape use-package))))
